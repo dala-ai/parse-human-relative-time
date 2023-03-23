@@ -16,6 +16,12 @@ const resetMilliseconds = ['setMilliseconds', 0];
 const timeZone = 'Europe/Berlin';
 const now = '2019-03-31T01:59:00+01:00';
 
+// Luxon starts the week on the ISO week, which start on mondays
+// So let's make dateFns do the same for purposes of the tests
+dateFns.setDefaultOptions({
+	weekStartsOn: 1,
+});
+
 const tests = [
 	[
 		'12am',
@@ -213,34 +219,34 @@ const tests = [
 	['this week', [['startOfWeek']], '2019-03-25T00:00:00+01:00'],
 	[
 		'last week',
-		[['startOfWeek'], ['subWeeks', 1]],
+		[['subWeeks', 1], ['startOfWeek']],
 		'2019-03-18T00:00:00+01:00',
 	],
 	[
 		'next week',
-		[['startOfWeek'], ['addWeeks', 1]],
-		'2019-04-13T00:00:00+02:00',
+		[['addWeeks', 1], ['startOfWeek']],
+		'2019-04-01T00:00:00+02:00',
 	],
-	['this month', [['startOfMonth']], '2019-03-01T01:59:00+01:00'],
+	['this month', [['startOfMonth']], '2019-03-01T00:00:00+01:00'],
 	[
 		'next month',
-		[['startOfMonth'], ['addMonths', 1]],
-		'2019-03-01T01:59:00+02:00',
+		[['addMonths', 1], ['startOfMonth']],
+		'2019-04-01T00:00:00+02:00',
 	],
 	[
 		'last month',
-		[['startOfMonth'], ['subMonths', 1]],
+		[['subMonths', 1], ['startOfMonth']],
 		'2019-02-01T00:00:00+01:00',
 	],
-	['jan', [['setMonth', 0]], '2019-01-01T01:59:00+01:00'],
-	['this jan', [['setMonth', 0]], '2019-01-01T01:59:00+01:00'],
+	['jan', [['setMonth', 0]], '2019-01-31T01:59:00+01:00'],
+	['this jan', [['setMonth', 0]], '2019-01-31T01:59:00+01:00'],
 	[
 		'last feb',
 		[
 			['subYears', 1],
 			['setMonth', 1],
 		],
-		'2018-02-01T01:59:00+01:00',
+		'2018-02-28T01:59:00+01:00',
 	],
 	[
 		'next march',
@@ -248,7 +254,7 @@ const tests = [
 			['addYears', 1],
 			['setMonth', 2],
 		],
-		'2020-03-01T01:59:00+01:00',
+		'2020-03-31T01:59:00+02:00',
 	],
 
 	['in 12 minutes', [['addMinutes', 12]], '2019-03-31T03:11:00+02:00'],
@@ -291,11 +297,11 @@ for (const [relative, instructions, iso] of tests) {
 
 	eql(lex(relative), instructions);
 
-	// const luxonNow = DateTime.fromISO(now).setZone(timeZone);
-	// const luxonParsed = parseWithLuxon(relative, luxonNow);
-	// const luxonActual = luxonParsed.toISO({ suppressMilliseconds: true });
+	const luxonNow = DateTime.fromISO(now).setZone(timeZone);
+	const luxonParsed = parseWithLuxon(relative, luxonNow);
+	const luxonActual = luxonParsed.toISO({ suppressMilliseconds: true });
 
-	// eql(luxonActual, iso, `Luxon ${relative}`);
+	eql(luxonActual, iso, `Luxon ${relative}`);
 
 	const dateFnNow = toDate(now, timeZone);
 	const dateFnParsed = parse(relative, dateFnNow);

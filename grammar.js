@@ -239,14 +239,14 @@
 				// Relative week
 				// Implies start of week
 				['THIS WEEK', `$$ = [['startOfWeek']]`],
-				['NEXT WEEK', `$$ = [['startOfWeek'], ['addWeeks', 1]]`],
-				['LAST WEEK', `$$ = [['startOfWeek'], ['subWeeks', 1]]`],
+				['NEXT WEEK', `$$ = [['addWeeks', 1], ['startOfWeek']]`],
+				['LAST WEEK', `$$ = [['subWeeks', 1], ['startOfWeek']]`],
 
 				// Relative month
 				// Implies start of month
 				['THIS MONTH', `$$ = [['startOfMonth']]`],
-				['NEXT MONTH', `$$ = [['startOfMonth'], ['addMonths', 1]]`],
-				['LAST MONTH', `$$ = [['startOfMonth'], ['subMonths', 1]]`],
+				['NEXT MONTH', `$$ = [['addMonths', 1], ['startOfMonth']]`],
+				['LAST MONTH', `$$ = [['subMonths', 1], ['startOfMonth']]`],
 				
 				// Absolute month of year (e.g jan, this feb, last december)
 				// Implies same day of month and same time
